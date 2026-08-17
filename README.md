@@ -10,7 +10,7 @@ _Parts A, B and C, then supporting appendices and the AI disclosure. What I assu
 
 Eleven incidents and a four-month launch are the signs. Underneath sit three problems — in the resourcing, the system, and the way we run — and they feed each other.
 
-**Resource — the load sits on two individuals, and QA is at the wrong end of the line**
+**Resource — the load sits on brilliant individual performances by the two players, and QA is at the wrong end of the line**
 
 - S. is the only person who can review the wallet; T. is the only one who knows the pipeline, and #10–11 happened _because_ T. was away
 - Two QA people cannot hand-check ~30 brands, and they only see the work at the end — so quality shows up as delay rather than as a gate
