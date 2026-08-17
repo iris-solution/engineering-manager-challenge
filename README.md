@@ -8,22 +8,22 @@ _Parts A, B and C, then supporting appendices and the AI disclosure. What I assu
 
 ## 1. Diagnosis
 
-Eleven incidents and a four-month launch are the signs. Underneath sit three problems — in the resourcing, the system, and the way we run — and they feed each other.
+Eleven incidents and a four-month launch are the signs. Three problems sit underneath — resourcing, the system, how we run — and they feed each other.
 
-**Resource — the load sits on brilliant individual performances by the two players, and QA is at the wrong end of the line**
+**Resource — we run on two people's heroics, and QA is at the wrong end of the line**
 
-- S. is the only person who can review the wallet; T. is the only one who knows the pipeline, and #10–11 happened _because_ T. was away
-- Two QA people cannot hand-check ~30 brands, and they only see the work at the end — so quality shows up as delay rather than as a gate
+- S. alone can review the wallet, T. alone knows the pipeline — and #10–11 happened _because_ T. was away
+- Two QA people cannot hand-check ~30 brands, and they see the work only at the end — so quality shows up as delay, not as a gate
 
 **The system — nothing in the app or the database enforces the rules**
 
-- No guard against a repeated payment callback (#1); float maths on money (#4). Every incident was caught by a human, never by a machine
-- Nothing limits what a batch job can take, and nothing tests under load: #2 drained the connection pool and froze withdrawals for six hours
+- No guard against a repeated payment callback (#1), float maths on money (#4), every incident caught by a human rather than a machine
+- Nothing limits what a batch job can take and nothing tests under load: #2 drained the connection pool and froze withdrawals for six hours
 
-**How we run — on memory rather than on anything repeatable**
+**How we run — on memory rather than anything repeatable**
 
 - Regions are stood up by hand: #3 lost six hours on launch day to credentials copied from region 1
-- No incident process ("whoever notices, fixes") and no review after region 3. Tickets, deploys and git history all exist, but nothing pulls them together and the one shared view is a burndown nobody trusts — so every decision rests on whoever tells the story best, mine included
+- No incident process ("whoever notices, fixes"), no review after region 3. Tickets, deploys and git history exist but nothing pulls them together, and the one shared view is a burndown nobody trusts — so decisions rest on whoever tells the story best, mine included
 
 **Two of these feed themselves:**
 
@@ -34,23 +34,22 @@ Eleven incidents and a four-month launch are the signs. Underneath sit three pro
 **Which is why the CEO's two commitments — region 4 in 10 weeks, zero money incidents — share one cause, not two.**
 
 - **Region 4** breaks like 2 and 3 did: hand-copied credentials (#3), four months against six weeks, no review afterwards — and launch day loads the pools that failed in #2
-- **Money bugs** return like #1 and #4 did: the rule lived only in someone's head. Three of five smaller incidents came from code that _passed review_ (#5–9), and PR #482 sits on my desk carrying both again
+- **Money bugs** return like #1 and #4 did: the rule lived only in someone's head. Three of five smaller incidents came from code that _passed review_ (#5–9), and PR #482 carries both again
 
 **One fix serves both: put the rules inside the system.** Anything needing a tired person to remember it goes first under pressure.
 
 ## 2. Priorities and trade-offs
 
-**What "zero money incidents" can honestly mean.** Not zero bugs. Stop most early, find the rest inside a day rather than waiting for a player to complain, correct balances safely. That's the version the CEO gets.
+**What "zero money incidents" can honestly mean.** Not zero bugs: stop most early, find the rest inside a day rather than waiting for a player to complain, fix balances safely. That's the version the CEO gets.
 
 | When                             | What happens _(owner)_                                                                                                                                                                                                                                                                                                                                                                              |
 | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Wk 0**<br>_Observe_            | • 1:1s and skip-levels<br>• **Run the region-3 review nobody ever ran**<br>• Baseline the numbers<br>• Name a region-4 launch lead<br>• Leads shape this plan, not just hear it                                                                                                                                                                                                                     |
-| **Wks 1–3**<br>_Two tracks_      | **Money** _(S. + 2 mids)_<br>• Name the code that touches money<br>• Checks into the build<br>• Nightly balance check + unusual-credit alert<br><br>**Region 4** _(launch lead)_<br>• Config into Git: diff the live regions, split out secrets, refuse to start on a wrong-region value<br><br>**Me**<br>• Backup trained for T.<br>• Both roles opened — **they help next quarter, not this one** |
-| **Wks 4–8**<br>_Build on it_     | • Payment integrations, D. building inside the checks _(Payments)_<br>• Region 4 stood up from Git<br>• Load and smoke tests as launch gates<br>• **Wk 6: rehearsal with real credentials** — the step region 2 skipped _(launch lead)_<br>• QA moves earlier _(L. + QA)_<br>• **Wk 4: honest replan to the CEO** _(me)_                                                                            |
-| **Wks 9–10**<br>_Launch_         | • Go / no-go on the checklist<br>• Staged rollout, each stage gated on smoke<br>• Nobody on call alone                                                                                                                                                                                                                                                                                              |
-| **Wks 11–13**<br>_Make it stick_ | • Review region 4 (unlike region 3)<br>• Compare to the Wk-0 baseline<br>• **Drop what didn't pay for itself**                                                                                                                                                                                                                                                                                      |
+| **Wk 0**<br>_Observe_            | • 1:1s and skip-levels<br>• **Run the region-3 review nobody ever ran**<br>• Baseline the numbers<br>• Name a launch lead<br>• Leads shape this plan, not just hear it                                                                                                                                                                                                                     |
+| **Wks 1–3**<br>_Two tracks_      | **Money** _(S. + 2 mids)_<br>• Name the code that touches money<br>• Checks into the build<br>• Nightly balance check + unusual-credit alert<br><br>**Region 4** _(launch lead)_<br>• Config into Git: diff the live regions, split out secrets, refuse to start on a wrong-region value<br><br>**Me**<br>• Backup trained for T.<br>• Both roles opened — **they help next quarter** |
+| **Wks 4–8**<br>_Build on it_     | • Payment integrations, D. building inside the checks _(Payments)_<br>• Region 4 stood up from Git<br>• Load and smoke as launch gates<br>• **Wk 6: rehearsal with real credentials**, the step region 2 skipped _(launch lead)_<br>• QA moves earlier _(L. + QA)_<br>• **Wk 4: replan to the CEO** _(me)_                                                                            |
+| **Wks 9–13**<br>_Launch, then keep_ | • Go / no-go on the checklist · staged rollout gated on smoke · nobody on call alone<br>• Afterwards: review region 4 (unlike region 3) · compare to the baseline · **drop what didn't pay for itself** |
 
-**Why config-in-Git comes first.** It's the biggest lever on the date: region 3 took four months because a region is stood up by hand, and region 2 fell over the same way (#3). Week 6 tests it — **stand a region up from the repo and the 10 weeks are real.** If not, the CEO hears it in week 4.
+**Config-in-Git is the biggest lever on the date** — region 3 took four months because regions are stood up by hand, and region 2 fell over the same way (#3). Week 6 is the test: **stand a region up from the repo and the 10 weeks are real.**
 
 **The trade-off.** Weeks 1–3 spend ~30% of Payments off the region-4 plan, funded by freezing the backlog. Wrong my way, region 4 slips a week or two; wrong the other way, we lose real money in a new regulated market. I take the schedule risk.
 
@@ -58,56 +57,55 @@ Eleven incidents and a four-month launch are the signs. Underneath sit three pro
 
 | Not doing                                          | Why                                                                                                             |
 | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Reshuffle the squads, or rebuild the wallet engine | Structure isn't the problem, and the wallet doesn't get opened up mid-launch                                    |
-| Clear the bug backlog                              | Frozen — money and regulator bugs only. I report the rest rather than hide it                                   |
-| Get the whole team onto the wallet and pipeline    | Too big for a quarter. **Two backups for S., one for T.** — enough that a holiday no longer stops work (#10–11) |
-| Automate the whole test suite                      | Money paths first                                                                                               |
-| The CRM & Data roadmap                             | Pushed back — and **I** tell T.'s stakeholders, not T.                                                          |
-| Hire two junior backend engineers                  | Nobody is free to mentor them                                                                                   |
+| Reshuffle the squads, or rebuild the wallet engine | Structure isn't the problem, and the wallet doesn't get opened mid-launch |
+| Clear the bug backlog | Frozen — money and regulator bugs only. I report the rest rather than hide it |
+| Get the whole team onto the wallet and pipeline | Too big for a quarter. **Two backups for S., one for T.** — enough that a holiday no longer stops work (#10–11) |
+| Automate the whole test suite, or keep the CRM & Data roadmap | Money paths get tested first. CRM is pushed back — and **I** tell T.'s stakeholders, not T. |
+| Hire two junior backend engineers | Nobody is free to mentor them |
 
 ## 3. Process changes
 
-Four, and each takes something that currently depends on a person remembering and hands it to the system.
+Four. Each takes something that depends on a person remembering and hands it to the system.
 
 | Change                                                                                                                                                                                                      | The problem it attacks                                                           | How I'll know it's working                                                                                            |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **Automatic money checks on every code change** — no rounded numbers, full-precision columns, balance and ledger written together or not at all, every read naming its brand, two approvals with one not S. | #1, #4, the 3-of-5 that slipped through review, our reliance on one person       | Run them over 90 days of merged PRs: if they'd have caught #1 and #4, that's my proof — their history, not my opinion |
-| **Nightly balance check, plus a continuous alert on unusual credits**                                                                                                                                       | Today a customer tells us; "zero incidents" means nothing if we can't notice one | We plant a mismatch and the next run alerts on it; the first real one is found by the job, not support                |
-| **A one-page incident process** — severity levels, one person in charge, no-blame review within 5 working days                                                                                              | Rising fix times, "whoever notices fixes it", no reviews                         | Fix times stop rising, then fall. Every serious incident produces one named, dated action that closes                 |
-| **Launch readiness review** — config in Git, credentials checked, load and smoke tests, staged rollout, go/no-go                                                                                            | #2, #3, the region-3 slip                                                        | We launch in the window, no config or load incidents                                                                  |
+| **Automatic money checks on every code change** — no rounded numbers, full-precision columns, balance and ledger written together or not at all, every read naming its brand, two approvals with one not S. | #1, #4, the 3-of-5 that slipped through review, our reliance on one person | Run them over 90 days of merged PRs: if they'd have caught #1 and #4, that's my proof — their history, not my opinion |
+| **Nightly balance check, plus a continuous alert on unusual credits** | Today a customer tells us; "zero incidents" means nothing if we can't notice one | We plant a mismatch and the next run alerts on it; the first real one is found by the job, not support |
+| **A one-page incident process** — severity levels, one person in charge, no-blame review within 5 working days | Rising fix times, "whoever notices fixes it", no reviews | Fix times stop rising, then fall. Every serious incident produces one named, dated action that closes |
+| **Launch readiness review** — config in Git, credentials checked, load and smoke tests, staged rollout, go/no-go | #2, #3, the region-3 slip | We launch in the window, no config or load incidents |
 
-**Testing moves earlier behind these.** Six layers run before code ships, and two on live data matter more still — because the six only catch what someone thought to test for, and PR #482 is the proof of that. **The only tool I buy is paging**: a check firing at 3am that wakes nobody is worthless. Appendices 2–3.
+**Testing moves earlier behind these.** Six layers before code ships; two on live data matter more, because the six only catch what someone thought to test for — PR #482 is the proof. **The only tool I buy is paging**: a check firing at 3am that wakes nobody is worthless. Appendices 2–3.
 
 The rule I hold myself to: **if I can't say how I'd notice a change isn't working, I don't make it.**
 
 ## 4. Metrics
 
-Five numbers, none needing a new tool — each falls out of a change in §3, not a dashboard:
+Five numbers, none needing a new tool — each falls out of a §3 change, not a dashboard:
 
 | The number                                    | Why it earns its place                                                                | Target                                     |
 | --------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------ |
-| **Money bugs reaching production**            | The CEO's ask, made countable. If it isn't zero, nothing else matters                 | **0**                                      |
-| **Time to notice a wrong balance**            | The early warning for the above; today the honest answer is "when a player complains" | Under a day                                |
-| **How often a money change breaks something** | Whether the checks work, or I've just added paperwork                                 | Baseline first — nothing collects it today |
-| **Release size and lead time**                | Weekly slipping to fortnightly is a batch-size problem                                | Batch size falling                         |
-| **People who can change each money path**     | The biggest structural risk, and one of the few fixable in a quarter                  | 3 wallet, 2 pipeline                       |
+| **Money bugs reaching production** | The CEO's ask, made countable. If it isn't zero, nothing else matters | **0** |
+| **Time to notice a wrong balance** | The early warning for the above; today the honest answer is "when a player complains" | Under a day |
+| **How often a money change breaks something** | Whether the checks work, or I've just added paperwork | Baseline first — nothing collects it today |
+| **Release size and lead time** | Weekly slipping to fortnightly is a batch-size problem | Batch size falling |
+| **People who can change each money path** | The biggest structural risk, and one of the few fixable in a quarter | 3 wallet, 2 pipeline |
 
 **SLOs, but not in week 1.** Our ~30 operators almost certainly hold contractual **SLAs**; incident #2 blocked withdrawals six hours and nobody can say whether that breached one. We run no **SLOs**, so there's no warning short of a breach. Wk 0 baselines; **wk 4** sets two off real data — _drift found within 24h_, _withdrawals 99.x%_ — each with an owner and one action when missed.
 
-**What I refuse to measure:** velocity, story points, per-person PR counts, the burndown. They count activity, and nobody here is short of activity.
+**What I refuse to measure:** velocity, story points, per-person PR counts, the burndown. They count activity, and nobody here is short of it.
 
 ## 5. People
 
 | Who                                                | Needs                            | What I do                                                                                                                                                                                                                                                                                               |
 | -------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **S.** — only wallet expert, only real gate        | Scope change, challenge          | Written goal: **wallet from 1 person to 3**, so teaching counts as staff work. Co-owns the money checks — gatekeeping turned into leverage — and advises on region 4 without building it. I read "LGTM, nice and simple" as out of hours, not careless, and say so. Tone is a separate talk, days later |
-| **D.** — wrote PR #482                             | Protection, then coaching        | They built what they were told to. Pairs with S. on the fix, then owns the money checklist: the person who got burned guards the gate                                                                                                                                                                        |
-| **T.** — sole pipeline owner, on call              | Protection, urgently             | The easiest risk here to undo. I push back the CRM roadmap and tell T.'s stakeholders myself; second engineer and runbooks in six weeks; off the critical path                                                                                                                                           |
-| **L.** — best people-manager, mentoring informally | Challenge, scope                 | The most under-used person here. Owns the release process and the "test earlier" work across all three squads, and co-presents at the wk-4 CEO check-in                                                                                                                                                 |
-| **2 mids / 3 juniors**                             | Coaching, protection             | Mids pair with S. to learn the wallet — how one expert becomes three. Juniors own no money change alone this quarter                                                                                                                                                                                    |
-| **QA (2)**                                         | Scope change, not headcount      | Two people can't hand-check ~30 brands and a third wouldn't change that. They move from _test the release_ to _make the squads able to test their own work_                                                                                                                                             |
-| **Two open roles**, empty 3 months                 | A decision from me               | The role is wrong, so I reshape it rather than wait: one **senior payments engineer** — the second wallet expert, the highest-value hire here — and one **test automation engineer**. Neither moves the 10-week clock, and I say so                                                                     |
-| **Me**                                             | To stop being a liability at 2am | I don't know this codebase. Wks 0–3 I read the wallet with S. — not to review PRs forever, but to make a real call on a Saturday night                                                                                                                                                                  |
+| **S.** — only wallet expert, only real gate | Scope change, challenge | Written goal: **wallet from 1 person to 3**, so teaching counts as staff work. Co-owns the money checks — gatekeeping turned into leverage — and advises on region 4 without building it. I read "LGTM, nice and simple" as out of hours, not careless, and say so. Tone: a separate talk |
+| **D.** — wrote PR #482                             | Protection, then coaching        | They built what they were told to. Pairs with S. on the fix, then owns the money checklist: the person who got burned guards the gate                                                                                                                                                                   |
+| **T.** — sole pipeline owner, on call              | Protection, urgently             | The easiest risk here to undo. I push back the CRM roadmap and tell T.'s stakeholders myself; second engineer and runbooks in six weeks; off the critical path                                                                                                                                          |
+| **L.** — best people-manager, mentoring informally | Challenge, scope | The most under-used person here. Owns the release process and the "test earlier" work across all three squads, and co-presents at the wk-4 CEO check-in |
+| **2 mids / 3 juniors** | Coaching, protection | Mids pair with S. to learn the wallet — how one expert becomes three. Juniors own no money change alone |
+| **QA (2)** | Scope change, not headcount | Two can't hand-check ~30 brands and a third wouldn't change that. They move from _test the release_ to _make the squads able to test their own work_ |
+| **Two open roles**, empty 3 months | A decision from me | The role is wrong, so I reshape rather than wait: one **senior payments engineer** — the second wallet expert, highest-value hire here — and one **test automation engineer**. Neither moves the 10-week clock, and I say so |
+| **Me** | To stop being a liability at 2am | I don't know this codebase. Wks 0–3 I read the wallet with S. — not to review PRs forever, but to make a real call at 2am |
 
 ---
 
